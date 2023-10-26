@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Displays the bad numbers
+
+cnt=1
+
+while [ $cnt -lt 21 ]
+do
+	case "$cnt" in
+		4) 
+		echo $cnt
+		echo "bad luck from China"
+		;;
+		9)
+		echo $cnt
+		echo "bad luck from Japan"
+		;;
+		17)
+		echo $cnt
+		echo "bad luck from Italy"
+		;;
+		*) echo $cnt
+		;;
+	esac
+	(( cnt++ ))
+done

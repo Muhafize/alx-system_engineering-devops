@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Prints the strnig ten times using until
+
+cnt=0
+
+until [	! $cnt -lt 10 ]
+do
+   echo "Best School"
+   (( cnt += 1 ))
+done

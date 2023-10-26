@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Displays Hi if cnt is 9
+
+cnt=0
+
+while [ $cnt -lt 10 ]
+do
+	if [ $cnt == 9 ]
+	then
+		echo "Hi"
+	fi
+	echo "Best School"
+	(( cnt++ ))
+done

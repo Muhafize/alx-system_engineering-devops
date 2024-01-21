@@ -1,0 +1,17 @@
+Curious to know what is happening after you typed google.com in to your browser and hit Enter?
+
+Let us dive in to the world of Domain, Websites and Servers.
+
+When you enter https://google.com, for example, your computer sends a request to the DNS (Domain Name System) server, which is the storage of all domain names. Then the DNS returns the exact IP address of the server that https://google.com is being served.
+
+Then, your computer attempts a connection with the server via the IP address. This connection is called TCP/IP (Transmission Control Protocol/Internet Protocol) connection. After that you have established something called "handshake".
+
+But before it reaches the server and the server is behind the firewall, your request will be verified by that firewall so that it doesn't have invalid request. And if you have a firewall, then the response form the server is filter too.
+
+Once there is a connection, your browser sends a request using a secure protocol called SSL (Secure Sockets Layer), which is the layer that encrypts the data that is transferred between you (the browser) and the server. If the the connection is not secure, the URL would begin with 'http://' instead of 'https://'. That 's' stands for 'Hypertext Transfer Protocol Secure'.
+
+To handle high traffic, companies like Holberton could maintain multiple servers and use a load balancer to distribute requests among them. The load balancer receives the request from your browser and sends it to a specific server based on its algorithm.
+
+The server receiving the request sends a response back to the load balancer, which in turn sends it back to your browser. The response typically includes HTML (Hyper Text Markup Language), CSS (Cascading Style Sheets), and JavaScript files that make up the webpage. The HTML file instruct the browser how to display the content, while the CSS file styles it, and the JavaScript file adds interactivity.
+
+If dynamic content, such as Google search results, is required, the web server requests it from an application server, which may then request data from a database server. The web server includes this data in the response it sends back to the browser. Finally, the browser renders the webpage and displays it to you.

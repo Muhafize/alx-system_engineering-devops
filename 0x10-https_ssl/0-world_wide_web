@@ -1,24 +1,16 @@
 #!/usr/bin/env bash
-# Display domain and subdomain
+# print domains and subdomains
 
-# shellcheck disable=SC2086
-domain_info() {
-	sub_domains=("$@")
-	count=$((${#sub_domains[@]} - 1))
-	i=0
-	while [ "$i" -lt "$count" ]; do
-		name="${sub_domains[$i]}.${sub_domains[$count]}"
-		ip_addr=$(dig "$name" | tac | awk -v nm=$name '$0 ~ nm {print $5; exit;}')
-		record=$(dig "$name" | tac | awk -v nm=$name '$0 ~ nm {print $4; exit;}')
-		echo "The subdomain ${sub_domains[$i]} is a $record record and points to $ip_addr"
-		((i++))
-	done
+print_domain_subdomain () {
+    dig "$1" | grep -A1 'ANSWER SECTION:' | sed -r "s/$1./$2/g" | awk -F" " ' NR==2 { print "The subdomain " $1 " is a " $4 " record and points to " $5 }'
 }
 
-if [ "$#" -eq 1 ]; then
-	sub_domains=("www" "lb-01" "web-01" "web-02")
-elif [ "$#" -eq 2 ]; then
-	sub_domains=("$2")
+if [ "$#" -eq 2 ]
+then
+    print_domain_subdomain "$2.$1" "$2"
+else
+    print_domain_subdomain "www.$1" "www"
+    print_domain_subdomain "lb-01.$1" "lb-01"
+    print_domain_subdomain "web-01.$1" "web-01"
+    print_domain_subdomain "web-02.$1" "web-02"
 fi
-
-domain_info "${sub_domains[@]}" "$1"

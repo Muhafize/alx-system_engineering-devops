@@ -1,17 +1,122 @@
-Curious to know what is happening after you typed google.com in to your browser and hit Enter?
+Ever Wondered What Happens When You Type https://www.google.com in Your Browser?
+Understanding the Journey: Typing "google.com" and Hitting Enter
+Introduction
+Have you ever wondered what really happens behind the scenes when you type "google.com" into your browser's address bar and press Enter? This repository aims to demystify this age-old interview question by breaking down the process step by step.
+The "g" Key is Pressed
+Let's start at the beginning: when you press the "g" key, a series of events is triggered both at the hardware and software levels:
+•	Keyboard Input: The browser receives the keyboard event and begins its auto-complete functions. Depending on various factors such as browser settings and mode, suggestions may appear as you type.
+The "Enter" Key is Pressed
+Now, let's fast forward to when you hit the "Enter" key, initiating a chain reaction of events:
+•	Electrical Signal: As the Enter key bottoms out, an electrical circuit specific to it is closed, allowing current to flow into the keyboard's logic circuitry.
+•	Keycode Generation: The keyboard converts the key press into a keycode integer (typically 13 for Enter), which is then encoded and sent to the computer over USB or Bluetooth.
+•	USB Transmission: If using a USB keyboard, the keycode is transmitted to the computer's USB host controller, following the USB protocol.
+•	Operating System Interaction: The computer's operating system receives the keycode, translates it into a key press event, and passes it to the appropriate application.
+Handling Interrupts
+The way interrupts are handled varies across different operating systems:
+•	Windows: A WM_KEYDOWN message is sent to the application, which then processes the key press event. The active window, typically the browser's address bar, receives and interprets the key press.
+•	macOS: A KeyDown NSEvent is dispatched to the application via the OS X WindowServer process. The event is placed into an event queue and processed by the application's main event loop.
+•	GNU/Linux: When using Xorg server, keycodes are acquired by the server and mapped to scancodes. The window manager then sends the character to the focused window for processing.
+		
+Is it a URL or a search term?
+When a URL lacks a protocol or valid domain name, the browser may interpret it as a search term. In such cases, the browser will forward the text in the address bar to its default web search engine. Often, a special piece of text is appended to the search query to indicate that it originated from the browser's address bar.
+Convert non-ASCII Unicode characters in the hostname
+The browser checks the hostname (e.g., "google.com") for any characters that are not within the standard set of allowed characters (a-z, A-Z, 0-9, -, or .). If non-ASCII Unicode characters are present, the browser applies Punycode encoding to transform these characters into a valid hostname representation.
+Check HSTS list
+The browser consults its preloaded HSTS (HTTP Strict Transport Security) list. This list contains websites that have explicitly requested to be accessed only via HTTPS (secure HTTP). If the requested website is listed in the HSTS list, the browser automatically sends its request using HTTPS. This helps enhance security by ensuring that all communication with the website is encrypted.
+If the website is not included in the HSTS list, the initial request is sent via HTTP. However, this can potentially leave the user vulnerable to a downgrade attack, where an attacker intercepts the HTTP request and forces communication to occur over an insecure channel. Modern browsers include the HSTS list to mitigate such risks and encourage secure HTTPS connections.
+Navigating the DNS Lookup and Socket Establishment
+Introduction
+Understanding the intricate process behind DNS lookup and socket establishment is pivotal in comprehending how web browsers translate domain names into IP addresses and establish connections with servers. Let's delve into the intricacies of this journey.
+DNS Lookup
+Before initiating a connection, the browser embarks on a DNS lookup journey:
+•	Cache Check: The browser first checks its DNS cache to see if the domain is stored locally.
+•	Local Hosts File: If not found in the cache, the browser references the local hosts file to resolve the hostname before resorting to DNS.
+•	DNS Resolution: Failing the above steps, the browser queries the configured DNS server, usually the local router or ISP's DNS server.
+ARP Process
+To facilitate communication with the DNS server or default gateway, the browser undertakes the ARP process:
+•	ARP Cache Check: Initially, the browser checks its ARP cache for the target IP address's MAC entry.
+•	Route Table Lookup: If absent in the cache, the browser consults the route table to determine the appropriate interface for sending ARP requests.
+•	ARP Request: A Layer 2 ARP request is broadcasted, seeking the MAC address associated with the target IP.
+•	ARP Reply: Upon receipt, the router or target device responds with an ARP reply, furnishing the MAC address.
+Socket Establishment
+With the necessary IP address and port obtained, the browser proceeds to establish a socket:
+•	TCP Segment Crafting: At the Transport Layer, a TCP segment is constructed, specifying destination and source ports.
+•	IP Packet Formation: The Network Layer encapsulates the TCP segment within an IP packet, including destination and source IP addresses.
+•	Frame Header Addition: Finally, at the Link Layer, a frame header is appended, comprising MAC addresses of the NIC and gateway.
 
-Let us dive in to the world of Domain, Websites and Servers.
+Navigating Network Protocols: From Ethernet to HTTP
+Introduction
+Traversing the intricate landscape of network protocols, from Ethernet to HTTP, is essential in understanding how data flows across the digital realm. Let's embark on a journey through these protocols, unraveling their intricacies and functionalities.
+Ethernet, WiFi, and Cellular Data Network
+For most home or small business Internet connections, data packets traverse various mediums, including Ethernet, WiFi, or cellular data networks. These packets may pass through modems, converting digital signals to analog for transmission over telephone, cable, or wireless connections. In larger enterprises, direct Ethernet or fiber connections facilitate digital data transmission.
+Routing and Autonomous Systems
+Upon reaching the local subnet's router, packets embark on a journey through autonomous system (AS) border routers and other ASes, eventually reaching the destination server. Each router along the way analyzes destination addresses and decrements the time to live (TTL) field in the IP header, ensuring packet delivery while mitigating network congestion.
+TCP Connection Flow
+Data transmission follows the TCP connection flow, involving a series of steps:
+•	Client Initiates Connection: The client sends a SYN packet, indicating the initial sequence number (ISN).
+•	Server Acknowledges: Upon receiving the SYN packet, the server acknowledges it, choosing its own ISN and sending an ACK packet.
+•	Data Transfer: Data is transferred bidirectionally, with each side incrementing sequence numbers and acknowledging receipt of packets.
+•	Connection Closure: When closing the connection, FIN packets are exchanged between the client and server, followed by acknowledgments.
+TLS Handshake
+Secure communication is facilitated through the TLS handshake, encompassing the following steps:
+•	ClientHello: The client initiates communication, specifying TLS version, cipher algorithms, and compression methods.
+•	ServerHello: The server responds, selecting encryption parameters and providing its public certificate.
+•	Key Exchange: Key exchange occurs, allowing generation of a symmetric master key for secure communication.
+•	Finished Messages: Both client and server exchange Finished messages, encrypted with the symmetric key, confirming handshake completion.
+TCP Congestion Control
+In case of packet loss, TCP congestion control algorithms, such as Cubic or New Reno, dynamically adjust congestion window sizes to optimize data transmission.
+HTTP Protocol
+Finally, communication culminates in the HTTP protocol, involving:
+•	Request Format: The client sends an HTTP request to the server, specifying the desired resource and HTTP version.
+•	Response Handling: The server responds with a status code, headers, and payload, which may include HTML content or indicate resource modification.
+•	Resource Retrieval: The client parses HTML content, retrieving additional resources referenced within the page.
 
-When you enter https://google.com, for example, your computer sends a request to the DNS (Domain Name System) server, which is the storage of all domain names. Then the DNS returns the exact IP address of the server that https://google.com is being served.
+Handling HTTP Requests and Browser Functionality
+Introduction
+The exchange of HTTP requests and responses between clients and servers is a fundamental aspect of web communication. Understanding how HTTP servers process requests and how browsers interpret and display content enhances our comprehension of the internet's inner workings. Let's delve deeper into these processes.
+HTTP Server Request Handling
+HTTP servers, such as Apache, nginx, or IIS, manage incoming requests on the server-side:
+1.	Request Reception: The HTTP daemon (HTTPD) server receives the HTTP request from the client.
+2.	Request Analysis: The server breaks down the request, extracting parameters like the HTTP method (e.g., GET), domain (e.g., google.com), and requested path/page (e.g., /).
+3.	Configuration Verification: The server verifies if a corresponding virtual host exists for the requested domain and if it can handle the specified HTTP method.
+4.	Access Control: Access control mechanisms, such as IP filtering or authentication, are enforced to determine if the client is authorized to proceed.
+5.	Rewrite Rules: If rewrite modules are installed, the server attempts to match the request against configured rules for URL rewriting.
+6.	Content Retrieval: The server retrieves the content associated with the request, typically falling back to the index file if no specific path/page is requested.
+7.	Parsing and Execution: Depending on the handler (e.g., PHP), the server parses and executes the content, such as interpreting PHP scripts and generating HTML output.
+Browser Functionality
+Browsers play a pivotal role in presenting web resources to users:
+1.	Parsing and Rendering: Upon receiving resources (HTML, CSS, JS, images, etc.) from the server, the browser parses HTML, CSS, and JS files and renders them for display.
+2.	DOM Tree Construction: The browser constructs a Document Object Model (DOM) tree, representing the structure of the HTML document.
+3.	Rendering Process: Rendering involves constructing a Render Tree, determining layout, and painting elements on the screen based on CSS styling and document structure.
+4.	Browser Components: Browsers consist of several components, including the user interface, browser engine, rendering engine, networking layer, UI backend, JavaScript engine, and data storage.
+5.	HTML Parsing: The rendering engine retrieves document contents in chunks, parses HTML markup, and constructs a parse tree, which represents the DOM structure of the document.
+.
 
-Then, your computer attempts a connection with the server via the IP address. This connection is called TCP/IP (Transmission Control Protocol/Internet Protocol) connection. After that you have established something called "handshake".
+Understanding the HTML Parsing and Page Rendering Process
+Introduction
+Parsing HTML and rendering web pages involve a complex sequence of steps orchestrated by web browsers. From tokenization to page rendering and GPU processing, each stage contributes to the seamless display of web content. Let's explore these processes in detail.
+HTML Parsing
+HTML parsing deviates from traditional parsing techniques due to the language's forgiving nature and browsers' error tolerance. Instead of conventional top-down or bottom-up parsers, browsers employ a custom parsing algorithm outlined in the HTML5 specification. This algorithm comprises two stages:
+1.	Tokenization: Breaking down the input HTML into tokens, considering elements, attributes, and text content.
+2.	Tree Construction: Building a DOM (Document Object Model) tree based on the tokens generated in the tokenization stage.
+Actions when Parsing is Finished
+Upon completing parsing, browsers initiate several actions:
+•	Fetching External Resources: CSS, images, and JavaScript files linked to the page are fetched.
+•	Document State Transition: The document transitions to the "interactive" state, and deferred scripts are parsed.
+•	Document State Finalization: The document state becomes "complete," and a "load" event is fired.
+CSS Interpretation
+CSS files and style elements are parsed to construct a StyleSheet object containing CSS rules. Each rule specifies selectors and corresponding style properties. Parsing involves lexical and syntax analysis based on CSS grammar.
+Page Rendering
+Page rendering involves several steps:
+1.	Frame Tree Creation: Traversing the DOM nodes to construct a Render Tree, considering CSS styles for each node.
+2.	Width Calculation: Calculating the preferred and actual width of each node based on CSS rules and layout constraints.
+3.	Height Calculation: Determining the height of each node, considering text wrapping and box model properties.
+4.	Coordinates Calculation: Computing the coordinates of each node for layout positioning.
+5.	Layer Creation: Organizing elements into layers to facilitate efficient rendering and animation grouping.
+6.	Texture Allocation: Allocating textures for each layer to facilitate rendering operations.
+GPU Rendering
+GPU rendering accelerates graphical computations, leveraging GPU parallelism for enhanced performance. Graphical layers split tasks into multiple pieces, optimizing float-point calculations required for rendering.
+Window Server Interaction
+Once rendering is complete, the window server orchestrates post-rendering activities and user-induced executions. This may involve executing JavaScript code, handling user interactions, and triggering additional network requests or layout modifications.
 
-But before it reaches the server and the server is behind the firewall, your request will be verified by that firewall so that it doesn't have invalid request. And if you have a firewall, then the response form the server is filter too.
-
-Once there is a connection, your browser sends a request using a secure protocol called SSL (Secure Sockets Layer), which is the layer that encrypts the data that is transferred between you (the browser) and the server. If the the connection is not secure, the URL would begin with 'http://' instead of 'https://'. That 's' stands for 'Hypertext Transfer Protocol Secure'.
-
-To handle high traffic, companies like Holberton could maintain multiple servers and use a load balancer to distribute requests among them. The load balancer receives the request from your browser and sends it to a specific server based on its algorithm.
-
-The server receiving the request sends a response back to the load balancer, which in turn sends it back to your browser. The response typically includes HTML (Hyper Text Markup Language), CSS (Cascading Style Sheets), and JavaScript files that make up the webpage. The HTML file instruct the browser how to display the content, while the CSS file styles it, and the JavaScript file adds interactivity.
-
-If dynamic content, such as Google search results, is required, the web server requests it from an application server, which may then request data from a database server. The web server includes this data in the response it sends back to the browser. Finally, the browser renders the webpage and displays it to you.
+https://medium.com/@muhafizahmede/ever-wondered-what-happens-when-you-type-hittps-www-google-com-in-your-browser-81c89545fdf2

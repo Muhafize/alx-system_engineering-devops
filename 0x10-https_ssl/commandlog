@@ -9,3 +9,4 @@ sudo mkdir -p /etc/haproxy/certs
 DOMAIN='example.com' sudo -E bash -c 'cat /etc/letsencrypt/live/$DOMAIN/fullchain.pem /etc/letsencrypt/live/$DOMAIN/privkey.pem > /etc/haproxy/certs/$DOMAIN.pem'
 sudo chmod -R go-rwx /etc/haproxy/certs
 sudo nano /etc/haproxy/haproxy.cfg
+sudo service haproxy start

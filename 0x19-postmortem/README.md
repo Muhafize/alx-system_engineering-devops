@@ -1,4 +1,5 @@
 Postmortem
+
 Database Outage in E-commerce Web Application
 Issue Summary
 Duration of the Outage: June 5, 2024, 14:00 - 15:30 GMT

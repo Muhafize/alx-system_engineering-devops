@@ -17,18 +17,31 @@ A misconfiguration in the database connection pool settings led to exhaustion of
 
 Timeline
 14:00 GMT: ⏰ Issue detected via a monitoring alert indicating high error rates on the e-commerce API endpoints.
+
 14:02 GMT: 🔍 Engineering team begins investigation, checking server logs and application performance metrics.
+
 14:10 GMT: 🤔 Initial hypothesis: A sudden spike in traffic is overwhelming the server.
+
 14:15 GMT: 🛠️ Misleading path: Scaled up web server instances, assuming it was a load issue, but problem persisted.
+
 14:30 GMT: 📞 Escalated to the database team after web server scaling did not resolve the issue.
+
 14:35 GMT: 📜 Database logs analyzed; discovered that the connection pool was exhausted.
+
 14:40 GMT: 🧐 Found misconfiguration in the database connection pool settings.
+
 14:45 GMT: 🔧 Adjusted the database connection pool settings to allow for more connections.
+
 15:00 GMT: 🔄 Restarted database and application servers.
+
 15:10 GMT: ✅ Verified that the service was restored and operating normally.
+
 15:30 GMT: 🎉 Issue resolved, and monitoring confirmed normal operation.
+
 Root Cause and Resolution
+
 Root Cause:
+
 The database connection pool was misconfigured with a maximum connection limit that was too low for the current load. This configuration caused the pool to become exhausted, preventing new connections from being established and making the database unresponsive to new queries.
 
 Resolution:

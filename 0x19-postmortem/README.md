@@ -1,46 +1,46 @@
-Postmortem: Project 19 Outage
+Postmortem: Database Outage in E-commerce Web Application
+Issue Summary
+Duration of the Outage: June 5, 2024, 14:00 - 15:30 GMT
 
-Summary
-During Project 19 of the ALX System Engineering & DevOps program, an isolated Ubuntu 14.04 container running an Apache web server experienced an outage at 18:00 GMT in Ghana. Several GET requests to the server resulted in a 500 Internal Server Error. The expected response was an HTML file for a simple Holberton WordPress site.
+Impact:
 
+Service affected: Main e-commerce website
+User experience: Users were unable to complete purchases or view product listings.
+Percentage of users affected: 100%
+Root Cause:
+The root cause was a misconfiguration in the database connection pool settings, leading to exhaustion of available connections and causing the database to become unresponsive.
 
-Incident Discovery
-The issue was discovered by Amoaful at 18:20 GMT upon opening the project. Amoaful immediately started debugging.
+Timeline
+14:00 GMT: Issue detected via a monitoring alert indicating high error rates on the e-commerce API endpoints.
+14:02 GMT: Engineering team begins investigation, checking server logs and application performance metrics.
+14:10 GMT: Initial hypothesis: a sudden spike in traffic is overwhelming the server.
+14:15 GMT: Misleading path: Scaled up web server instances, assuming it was a load issue, but problem persisted.
+14:30 GMT: Escalated to the database team after web server scaling did not resolve the issue.
+14:35 GMT: Database logs analyzed; discovered that the connection pool was exhausted.
+14:40 GMT: Found misconfiguration in the database connection pool settings.
+14:45 GMT: Adjusted the database connection pool settings to allow for more connections.
+15:00 GMT: Restarted database and application servers.
+15:10 GMT: Verified that the service was restored and operating normally.
+15:30 GMT: Issue resolved, and monitoring confirmed normal operation.
+Root Cause and Resolution
+Root Cause:
+The database connection pool was misconfigured with a maximum connection limit that was too low for the current load. This configuration caused the pool to become exhausted, preventing new connections from being established and making the database unresponsive to new queries.
 
-Debugging Process
-Checking Running Processes
+Resolution:
 
-Command Used: ps aux
-Observation: Both root and www-data processes of Apache2 were running properly.
-Examining Apache Configuration
+The maximum connection limit in the database connection pool settings was increased to accommodate the current and anticipated load.
+The database and application servers were restarted to apply the new settings and clear any existing stale connections.
+Post-restart, the system was monitored to ensure that the connection pool was handling the load correctly and that no further connection issues were occurring.
+Corrective and Preventative Measures
+Improvements and Fixes:
 
-Checked Directory: /etc/apache2/sites-available/
-Content Serving Directory: /var/www/html/
-Using strace on Apache Processes
+Review and Update Configuration: Regularly review and update database connection pool settings based on usage patterns and load forecasts.
+Load Testing: Implement comprehensive load testing to identify and rectify configuration issues before they impact production.
+Monitoring Enhancements: Enhance monitoring to include specific alerts for connection pool usage and availability.
+Tasks:
 
-First Attempt: Strace on Apache root PID
-Result: No useful information.
-Second Attempt: Strace on www-data PID
-Error Discovered: -1 ENOENT (No such file or directory) when accessing /var/www/html/wp-includes/class-wp-locale.phpp.
-Identifying the Erroneous File Extension
-
-Tool Used: Vim pattern matching
-File Examined: /var/www/html/wp-settings.php
-Issue Found: On line 137, the code require_once( ABSPATH . WPINC . '/class-wp-locale.php' ); contained an erroneous .phpp extension.
-Fixing the Bug
-
-Action Taken: Deleted the trailing 'p' from .phpp.
-Verification: Executed another curl command, which returned a 200 OK response.
-Automation
-To prevent this issue in the future, Amoaful wrote a Puppet manifest to automate the detection and correction of similar errors.
-
-Root Cause
-The error in the wp-settings.php file of the WordPress application caused a failure when attempting to load class-wp-locale.phpp. The correct file name should have been class-wp-locale.php.
-
-Prevention Measures
-Testing:
-Implement comprehensive testing during the development stages to catch errors early.
-Monitoring:
-Utilize uptime-monitoring services like UptimeRobot to alert the team of any outages.
-Conclusion
-This incident underscored the importance of thorough testing and effective monitoring in the development process. By implementing these measures, future issues can be detected and resolved more efficiently, ensuring a more stable and reliable web service.
+Patch Database Server: Apply the latest patches to the database server to ensure optimal performance and security.
+Update Documentation: Document the correct configuration settings and load handling procedures for the database connection pool.
+Implement Load Testing: Set up regular load testing routines to simulate high traffic scenarios and validate system performance under load.
+Enhance Monitoring: Add detailed monitoring for database connection pool metrics, including alerts for high usage and potential exhaustion.
+Conduct Training: Provide training for the engineering team on identifying and resolving database connection pool issues.

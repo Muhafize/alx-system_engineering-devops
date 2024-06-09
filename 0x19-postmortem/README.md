@@ -1,6 +1,8 @@
 Postmortem: Project 19 Outage
+
 Summary
 During Project 19 of the ALX System Engineering & DevOps program, an isolated Ubuntu 14.04 container running an Apache web server experienced an outage at 18:00 GMT in Ghana. Several GET requests to the server resulted in a 500 Internal Server Error. The expected response was an HTML file for a simple Holberton WordPress site.
+
 
 Incident Discovery
 The issue was discovered by Amoaful at 18:20 GMT upon opening the project. Amoaful immediately started debugging.
